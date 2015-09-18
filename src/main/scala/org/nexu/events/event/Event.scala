@@ -3,7 +3,6 @@ package org.nexu.events.event
 import java.util.UUID
 
 import org.nexu.events.domain.Aggregate
-import sbt.serialization.JsonValue
 import spray.json.JsValue
 
 /**

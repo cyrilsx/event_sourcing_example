@@ -2,11 +2,22 @@ package org.nexu.events.domain
 
 import java.util.Objects.nonNull
 
+import spray.json.DefaultJsonProtocol
 
-class User(val email: String, val nickname: String) {
+
+case class User(email: String, nickname: String) {
 
   def isValid = {
     require(nonNull(email))
+  }
+
+}
+
+object UserJsonFormats {
+
+  object JsonImplicits extends DefaultJsonProtocol {
+    implicit val userFormat = jsonFormat2(User)
+
   }
 
 }

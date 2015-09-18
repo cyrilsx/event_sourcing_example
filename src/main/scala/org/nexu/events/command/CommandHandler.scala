@@ -1,9 +1,8 @@
 package org.nexu.events.command
 
-import com.websudos.phantom.dsl.ResultSet
 import org.nexu.events.event.Event
 import org.nexu.events.fw.{EventStore, AggregateFactory}
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
@@ -24,7 +23,7 @@ class CommandHandler {
    * @param command
    * @return Future of generated event
    */
-  def sendCommand(command: _ <: Command) : Future[Event] = {
+  def sendCommand[T <: Command](command: T) : Future[Event] = {
     val aggregate = aggregateFactory.buildAggregate(command.targetClassAggregate, command.targetAggregateId)
     aggregate.map(aggregate => {
       val event = aggregate.onCommand.apply(command)

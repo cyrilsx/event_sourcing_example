@@ -3,7 +3,7 @@ package org.nexu.events.event
 import java.util.UUID
 
 import org.nexu.events.domain.{Aggregate, Meeting}
-import spray.json.{JsValue, pimpAny, jsonWriter, jsonReader}
+import spray.json._
 
 /**
  * Created by cyril on 10.09.15.
@@ -18,13 +18,11 @@ case class MeetingCreated(meeting: Meeting, aggregate: Aggregate, overlappingMee
   override def toObjValue(jsValue: JsValue): Event = jsonReader.read(jsValue).asInstanceOf[MeetingCreated]
 }
 
-/**
- * Companion class with static
- */
-object MeetingCreated {
 
-  def apply(aggregate: Aggregate, meeting: Meeting, overlappingMeeting: List[Meeting]): MeetingCreated = {
-    new MeetingCreated(meeting, aggregate, overlappingMeeting)
+object MeetingCreatedJsonFormats {
+
+  object JsonImplicits extends DefaultJsonProtocol {
+    implicit val meetingCreatedFormat = jsonFormat3(MeetingCreated)
   }
 
 }

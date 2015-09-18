@@ -1,5 +1,8 @@
 package org.nexu.events.domain
 
+import spray.json.DefaultJsonProtocol
+import TimeSlotJsonFormats._
+import UserJsonFormats._
 
 case class Meeting(timeslot: TimeSlot, description: String, participants: List[User]) {
 
@@ -31,5 +34,17 @@ case class Meeting(timeslot: TimeSlot, description: String, participants: List[U
 
 }
 
-class RecurrentMeeting(timeSlot: TimeSlot, description: String, participants: List[User], period: Period)
-  extends Meeting(timeSlot, description, participants)
+case class RecurrentMeeting(override val timeslot: TimeSlot, override val description: String, override val participants: List[User], period: Period)
+  extends Meeting(timeslot, description, participants)
+
+
+
+object MeetingCreatedJsonFormats {
+
+  object JsonImplicits extends DefaultJsonProtocol {
+    implicit val meetingFormat = jsonFormat3(Meeting)
+    implicit val recurrentMeetingFormat = jsonFormat4(RecurrentMeeting)
+
+  }
+
+}

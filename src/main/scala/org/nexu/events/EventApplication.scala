@@ -5,6 +5,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import org.nexu.events.command.{CommandHandler, CreateMeeting}
+import org.nexu.events.event.MeetingCreatedJsonFormats.JsonImplicits
 
 
 /**
@@ -14,6 +15,8 @@ object EventApplication extends App {
   // Actor system
   implicit val system = ActorSystem("event-system")
   implicit val materializer = ActorMaterializer()
+
+  import JsonImplicits._
   val route = {
     path("meeting") {
       post {

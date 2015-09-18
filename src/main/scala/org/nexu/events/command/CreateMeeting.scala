@@ -1,6 +1,7 @@
 package org.nexu.events.command
 
-import org.nexu.events.domain.{Aggregate, Meeting}
+
+import org.nexu.events.domain.{Aggregate, Meeting, Calendar}
 
 
 case class CreateMeeting(meeting: Meeting, calendarId: Long) extends Command {
@@ -8,6 +9,6 @@ case class CreateMeeting(meeting: Meeting, calendarId: Long) extends Command {
 
   override def targetAggregateId: Long = calendarId
 
-  override def targetClassAggregate: Class[_ <: Aggregate] = org.nexu.events.domain.Calendar.class
+  override def targetClassAggregate: Class[_ <: Aggregate] = classOf[Calendar]
 
 }
