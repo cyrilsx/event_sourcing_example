@@ -20,7 +20,7 @@ class EventDbObjects extends CassandraTable[EventStore, EventDbObject] {
 
   object id extends UUIDColumn(this) with PartitionKey[UUID]
 
-  object calendarId extends LongColumn(this) with PartitionKey[Long]
+  object calendarId extends StringColumn(this) with PartitionKey[String]
 
   object jsonEventObject extends StringColumn(this)
 
@@ -39,12 +39,12 @@ class EventDbObjects extends CassandraTable[EventStore, EventDbObject] {
   }
 }
 
-case class EventDbObject(id: UUID, calendarId: Long, creationDate: DateTime, jsonEventObject: String, eventClass: String)
+case class EventDbObject(id: UUID, calendarId: String, creationDate: DateTime, jsonEventObject: String, eventClass: String)
 
 
 class EventStore extends EventDbObjects {
 
-  def findAll(pCalendarId: Long): Future[List[Event]] = {
+  def findAll(pCalendarId: String): Future[List[Event]] = {
     select.where(_ => calendarId eqs pCalendarId)
       .fetch()
       .map(eventDbObjects => {

@@ -1,5 +1,6 @@
 package org.nexu.events.event
 
+
 import java.util.UUID
 
 import org.nexu.events.domain.{Aggregate, Calendar, Meeting}
@@ -14,12 +15,3 @@ case class MeetingCreated(meeting: Meeting, aggregate: Calendar, overlappingMeet
 
 }
 
-
-//
-//object MeetingCreatedJsonFormats {
-//
-//  object JsonImplicits extends DefaultJsonProtocol {
-//    implicit val meetingCreatedFormat = jsonFormat3(MeetingCreated)
-//  }
-//
-//}

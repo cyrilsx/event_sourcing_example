@@ -10,7 +10,7 @@ trait Aggregate {
 
   def replay(event: Event): Aggregate
 
-  def getAggregateId: Long
+  def getAggregateId: String
 
   def getVersion: Long
 

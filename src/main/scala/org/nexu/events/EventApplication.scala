@@ -8,7 +8,6 @@ import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 import org.json4s._
 import org.json4s.native.JsonMethods._
 import org.json4s.Extraction
-//import scala.concurrent.ExecutionContext.Implicits.global
 import org.nexu.events.command.{CommandHandler, CreateMeeting}
 
 

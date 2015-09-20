@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 /**
  * Created by cyril on 10.09.15.
  */
-case class TimeSlot(startDate: DateTime, duration: org.joda.time.Period) {
+case class TimeSlot(startDate: DateTime, duration: org.joda.time.Duration) {
 
   def belongTo(localDateTime: DateTime) = localDateTime.isAfter(startDate) && localDateTime.isBefore(getEndDateTime())
 

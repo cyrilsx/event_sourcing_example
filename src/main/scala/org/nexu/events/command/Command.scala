@@ -6,7 +6,7 @@ trait Command {
 
   def isValid
 
-  def targetAggregateId: Long
+  def targetAggregateId: String
 
   def targetClassAggregate: Class[_ <: Aggregate]
 

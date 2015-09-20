@@ -11,7 +11,7 @@ object AggregateFactory {
 
   val eventStore = new EventStore
 
-  def buildAggregate(clazz: Class[_ <: Aggregate], aggregateId: Long) : Future[Aggregate] = {
+  def buildAggregate(clazz: Class[_ <: Aggregate], aggregateId: String) : Future[Aggregate] = {
     eventStore.findAll(aggregateId).map(
       eventsInDb => {
         var aggregrate: Aggregate = clazz.newInstance()

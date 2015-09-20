@@ -34,14 +34,3 @@ case class Meeting(timeslot: TimeSlot, description: String, participants: List[U
 class RecurrentMeeting(override val timeslot: TimeSlot, override val description: String, override val participants: List[User], period: Period)
   extends Meeting(timeslot, description, participants)
 
-
-//object MeetingJsonFormats {
-//
-//
-//  object JsonImplicits extends DefaultJsonProtocol with SprayJsonSupport {
-//    implicit val meetingFormat = lazyFormat(jsonFormat(Meeting))
-////    implicit val recurrentMeetingFormat = lazyFormat(jsonFormat4(RecurrentMeeting))
-//
-//  }
-//
-//}
