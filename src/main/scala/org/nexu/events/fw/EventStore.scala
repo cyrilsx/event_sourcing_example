@@ -7,15 +7,12 @@ import com.datastax.driver.core.Row
 import com.websudos.phantom.CassandraTable
 import com.websudos.phantom.dsl._
 import org.joda.time.DateTime
+import org.json4s.{Extraction, DefaultFormats}
 import org.nexu.events.event.Event
-import spray.json._
 
-import DefaultJsonProtocol._
-import org.nexu.events.event.MeetingCreatedJsonFormats._
 import CassandraConfig.MyDatabase._
-import spray.json._
 
-
+import org.json4s.native.JsonMethods._
 import scala.concurrent.Future
 
 
@@ -59,12 +56,14 @@ class EventStore extends EventDbObjects {
     })
   }
 
-  private def toObj[T <: Event](eventDbObject: EventDbObject, clazz: Class[T]): T = {
-    eventDbObject.jsonEventObject.parseJson.convertTo[T]
+  private def toObj[T <: Event](eventDbObject: EventDbObject, clazz: Class[T])(implicit m: Manifest[T]): T = {
+    implicit lazy val formats = DefaultFormats
+    parse(eventDbObject.jsonEventObject, true).extract[T]
   }
 
 
   def store(event: Event): Future[Event] = {
+    implicit lazy val formats = DefaultFormats
     select.count().where(_ => calendarId eqs event.getAggregate.getAggregateId).one()
       .map(count => {
       // find a alternative to this
@@ -76,7 +75,7 @@ class EventStore extends EventDbObjects {
         insert.value(_.id, event.getId)
           .value(_.calendarId, event.getAggregate.getAggregateId)
           .value(_.creationDate, DateTime.now())
-          .value(_.jsonEventObject, event.toJsonValue.compactPrint)
+          .value(_.jsonEventObject, compact(render(Extraction.decompose(event))))
           .value(_.eventClass, event.getClass.getName)
           .execute()
         event

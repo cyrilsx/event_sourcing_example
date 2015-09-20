@@ -19,7 +19,6 @@ class CommandHandler {
 
   /**
    *
-   *
    * @param command
    * @return Future of generated event
    */

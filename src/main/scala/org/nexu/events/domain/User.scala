@@ -2,7 +2,6 @@ package org.nexu.events.domain
 
 import java.util.Objects.nonNull
 
-import spray.json.DefaultJsonProtocol
 
 
 case class User(email: String, nickname: String) {
@@ -13,11 +12,3 @@ case class User(email: String, nickname: String) {
 
 }
 
-object UserJsonFormats {
-
-  object JsonImplicits extends DefaultJsonProtocol {
-    implicit val userFormat = jsonFormat2(User)
-
-  }
-
-}

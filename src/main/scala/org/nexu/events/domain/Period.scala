@@ -1,28 +1,17 @@
 package org.nexu.events.domain
 
-import java.time.temporal.{TemporalUnit}
-
-import spray.json.DefaultJsonProtocol
+import org.joda.time.Duration
 
 
-case class Period(temporalUnit: TemporalUnit, delayUnit: Int) {
+case class Period(duration: Duration) {
 
   def nextEvent(meeting: Meeting): TimeSlot = {
-    new TimeSlot(meeting.timeslot.startDate.plus(delayUnit, temporalUnit), meeting.timeslot.duration)
+    new TimeSlot(meeting.timeslot.startDate.plus(duration), meeting.timeslot.duration)
   }
 
   def getFuturesEvent(meeting: Meeting): Stream[TimeSlot] = {
     lazy val nextEvent: TimeSlot = this.nextEvent(meeting)
     nextEvent #:: getFuturesEvent(new Meeting(nextEvent, meeting.description, meeting.participants))
-  }
-
-}
-
-object PeriodJsonFormats {
-
-  object JsonImplicits extends DefaultJsonProtocol {
-    implicit val periodFormat = jsonFormat2(TimeSlot)
-
   }
 
 }

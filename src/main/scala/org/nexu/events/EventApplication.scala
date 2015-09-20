@@ -4,8 +4,12 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
+import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
+import org.json4s._
+import org.json4s.native.JsonMethods._
+import org.json4s.Extraction
+//import scala.concurrent.ExecutionContext.Implicits.global
 import org.nexu.events.command.{CommandHandler, CreateMeeting}
-import org.nexu.events.event.MeetingCreatedJsonFormats.JsonImplicits
 
 
 /**
@@ -15,8 +19,10 @@ object EventApplication extends App {
   // Actor system
   implicit val system = ActorSystem("event-system")
   implicit val materializer = ActorMaterializer()
+  implicit val serialization = native.Serialization
+  implicit lazy val formats = DefaultFormats
 
-  import JsonImplicits._
+
   val route = {
     path("meeting") {
       post {
@@ -24,7 +30,7 @@ object EventApplication extends App {
           entity(as[CreateMeeting]) { createMeeting =>
             complete {
               commandHandler.sendCommand(createMeeting)
-                .map(event => event.toJsonValue.toString())
+                .map(event => compact(render(Extraction.decompose(event))))(system.dispatcher)
             }
           }
         }

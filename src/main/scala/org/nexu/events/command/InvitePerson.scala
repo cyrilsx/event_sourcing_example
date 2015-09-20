@@ -10,5 +10,5 @@ class InvitePerson(user: User, meeting: Meeting, calendarId: Long) extends Comma
 
   override def targetAggregateId: Long = calendarId
 
-  override def targetClassAggregate: Class[_ >: Aggregate] = ???
+  override def targetClassAggregate: Class[_ <: Aggregate] = ???
 }
