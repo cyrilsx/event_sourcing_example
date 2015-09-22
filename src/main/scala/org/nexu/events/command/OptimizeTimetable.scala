@@ -7,6 +7,7 @@ import org.nexu.events.domain.{Calendar, Aggregate}
 
 
 case class OptimizeTimetable(calendarId: String, from: DateTime, to: DateTime) extends Command {
+
   override def isValid: Unit = {
     requireNonNull(from, "start date must be fill")
     requireNonNull(from, "end date must be fill")

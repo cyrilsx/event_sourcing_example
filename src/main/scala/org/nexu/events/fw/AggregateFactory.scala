@@ -5,7 +5,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
- * Created by cyril on 12.09.15.
+ * Build an aggregate from events store in db.
  */
 object AggregateFactory {
 

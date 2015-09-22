@@ -16,8 +16,6 @@ import scala.annotation.tailrec
  */
 case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, version: Long) extends Aggregate {
 
-  private val EMPTY_CALENDAR = new Calendar(null, List(), null, 0)
-
   def onCommand = {
     case app: CreateMeeting => createAppointment(app)
     case newCalendar: CreateCalendar => createCalendar(newCalendar)
@@ -50,29 +48,28 @@ case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, 
    * @return
    */
   def createCalendar(createCommand: CreateCalendar) = {
-    if (this.eq(EMPTY_CALENDAR))
+    if (this.eq(Calendar.EMPTY_CALENDAR))
       new CalendarCreated(new Calendar(createCommand.user, List(), createCommand.calendarId, 0))
     else
       throw new IllegalArgumentException("calendar id already exist " + createCommand.calendarId)
   }
 
 
+  /**
+   * Greedy algorithm to reorganize subset of meetings
+   * @param from start period to reorganized
+   * @param to end period to reorganized
+   * @return TimetableReorganized event
+   */
   def optimizeTimeTable(from: DateTime, to: DateTime) = {
-    val selectedMeeting = this.timetable
-      .filter(meeting => meeting.timeslot.startDateTime.isAfter(from)
-        && meeting.timeslot.getEndDateTime().isBefore(to))
-      .sortBy(meeting => meeting.timeslot.getEndDateTime())
 
-    val temporaryTimetable =this.timetable
-      .filter(meeting => meeting.timeslot.startDateTime.isAfter(from)
-      && meeting.timeslot.getEndDateTime().isBefore(to))
-
-
-    val meetingChanged = organiseMeeting(selectedMeeting, List(), List())
-    new TimetableReorganized(new Calendar(owner, temporaryTimetable ::: meetingChanged._1 ::: meetingChanged._2, aggregateId, version + 1))
-
-
-
+    /**
+     * Recursive function to reorganized the meeting
+     * @param meetingToSchedule
+     * @param plannedMeeting
+     * @param unresolvedMeeting
+     * @return
+     */
     @tailrec
     def organiseMeeting(meetingToSchedule: List[Meeting], plannedMeeting: List[Meeting], unresolvedMeeting: List[Meeting]): (List[Meeting], List[Meeting]) = {
       if(meetingToSchedule.isEmpty) {
@@ -84,6 +81,18 @@ case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, 
       }
     }
 
+    val selectedMeeting = this.timetable
+      .filter(meeting => meeting.timeslot.startDateTime.isAfter(from)
+        && meeting.timeslot.getEndDateTime().isBefore(to))
+      .sortBy(meeting => meeting)(EndTimeOrdering)
+
+    val temporaryTimetable =this.timetable
+      .filter(meeting => meeting.timeslot.startDateTime.isAfter(from)
+      && meeting.timeslot.getEndDateTime().isBefore(to))
+
+
+    val meetingChanged = organiseMeeting(selectedMeeting, List(), List())
+    new TimetableReorganized(new Calendar(owner, temporaryTimetable ::: meetingChanged._1 ::: meetingChanged._2, aggregateId, version + 1))
   }
 
 
@@ -99,6 +108,17 @@ case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, 
     }
 
   }
+
+
+}
+
+object Calendar {
+  private val EMPTY_CALENDAR = new Calendar(null, List(), null, 0)
+
+}
+
+object EndTimeOrdering extends Ordering[Meeting] {
+  def compare(a:Meeting, b:Meeting) = a.timeslot.getEndDateTime compareTo b.timeslot.getEndDateTime
 }
 
 
