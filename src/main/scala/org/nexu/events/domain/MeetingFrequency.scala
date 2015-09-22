@@ -3,10 +3,10 @@ package org.nexu.events.domain
 import org.joda.time.Duration
 
 
-case class Period(duration: Duration) {
+case class MeetingFrequency(duration: Duration) {
 
   def nextEvent(meeting: Meeting): TimeSlot = {
-    new TimeSlot(meeting.timeslot.startDate.plus(duration), meeting.timeslot.duration)
+    new TimeSlot(meeting.timeslot.startDateTime.plus(duration), meeting.timeslot.duration)
   }
 
   def getFuturesEvent(meeting: Meeting): Stream[TimeSlot] = {

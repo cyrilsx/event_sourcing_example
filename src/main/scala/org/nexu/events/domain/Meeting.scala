@@ -19,7 +19,7 @@ case class Meeting(timeslot: TimeSlot, description: String, participants: List[U
    * @return
    */
   def hasConflit(otherMeeting: Meeting): Boolean = {
-    otherMeeting.timeslot.belongTo(timeslot.startDate) || otherMeeting.timeslot.belongTo(timeslot.getEndDateTime())
+    otherMeeting.timeslot.contains(timeslot.startDateTime) || otherMeeting.timeslot.contains(timeslot.getEndDateTime())
   }
 
   def isValid = {
@@ -31,6 +31,6 @@ case class Meeting(timeslot: TimeSlot, description: String, participants: List[U
 
 }
 
-class RecurrentMeeting(override val timeslot: TimeSlot, override val description: String, override val participants: List[User], period: Period)
+class RecurrentMeeting(override val timeslot: TimeSlot, override val description: String, override val participants: List[User], period: MeetingFrequency)
   extends Meeting(timeslot, description, participants)
 
