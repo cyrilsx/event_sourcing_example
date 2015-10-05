@@ -72,29 +72,28 @@ case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, 
      */
     @tailrec
     def organiseMeeting(meetingToSchedule: List[Meeting], plannedMeeting: List[Meeting], unresolvedMeeting: List[Meeting]): (List[Meeting], List[Meeting]) = {
-      if(meetingToSchedule.isEmpty) {
+      if (meetingToSchedule.isEmpty) {
         (plannedMeeting, unresolvedMeeting)
-      } else if(plannedMeeting.exists(meeting => meeting.hasConflit(meetingToSchedule.head))) {
-        organiseMeeting(meetingToSchedule.tail, plannedMeeting, meetingToSchedule.head ::unresolvedMeeting)
+      } else if (plannedMeeting.exists(meeting => meeting.hasConflit(meetingToSchedule.head))) {
+        organiseMeeting(meetingToSchedule.tail, plannedMeeting, meetingToSchedule.head :: unresolvedMeeting)
       } else {
         organiseMeeting(meetingToSchedule.tail, meetingToSchedule.head :: plannedMeeting, unresolvedMeeting)
       }
     }
 
-    val selectedMeeting = this.timetable
+    val selectedMeetings = this.timetable
       .filter(meeting => meeting.timeslot.startDateTime.isAfter(from)
-        && meeting.timeslot.getEndDateTime().isBefore(to))
+      && meeting.timeslot.getEndDateTime().isBefore(to))
       .sortBy(meeting => meeting)(EndTimeOrdering)
 
-    val temporaryTimetable =this.timetable
+    val temporaryTimetable = this.timetable
       .filter(meeting => meeting.timeslot.startDateTime.isAfter(from)
       && meeting.timeslot.getEndDateTime().isBefore(to))
 
 
-    val meetingChanged = organiseMeeting(selectedMeeting, List(), List())
+    val meetingChanged = organiseMeeting(selectedMeetings, List(), List())
     new TimetableReorganized(new Calendar(owner, temporaryTimetable ::: meetingChanged._1 ::: meetingChanged._2, aggregateId, version + 1))
   }
-
 
 
   override def getAggregateId: String = aggregateId
@@ -103,8 +102,8 @@ case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, 
 
   override def replay(event: Event): Aggregate = {
     event match {
-      case meetingCreatedEvent: MeetingCreated =>
-        new Calendar(owner, meetingCreatedEvent.meeting :: timetable, aggregateId, version + 1)
+      case meetingCreatedEvent: MeetingCreated => new Calendar(owner, meetingCreatedEvent.meeting :: timetable, aggregateId, version + 1)
+      case newCalendar: CalendarCreated => newCalendar.getAggregate.copy(version = version + 1)
     }
 
   }
@@ -118,7 +117,7 @@ object Calendar {
 }
 
 object EndTimeOrdering extends Ordering[Meeting] {
-  def compare(a:Meeting, b:Meeting) = a.timeslot.getEndDateTime compareTo b.timeslot.getEndDateTime
+  def compare(a: Meeting, b: Meeting) = a.timeslot.getEndDateTime compareTo b.timeslot.getEndDateTime
 }
 
 

@@ -12,8 +12,6 @@ case class Meeting(timeslot: TimeSlot, description: String, participants: List[U
    * <li>m1: 13:00 -> 14:00, m2: 10:10 -> 12:50</li>
    * </ul>
    *
-   * Algo:
-   * if m1.startDate < m2.endDate && m1.endDate > m2.endDate
    *
    * @param otherMeeting
    * @return

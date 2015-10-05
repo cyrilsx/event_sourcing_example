@@ -1,6 +1,7 @@
 package org.nexu.events.command
 
-import org.nexu.events.event.Event
+import akka.actor.{ActorRef, Props, ActorSystem}
+import org.nexu.events.event.{EventNotifier, Event}
 import org.nexu.events.fw.{EventStore, AggregateFactory}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -17,6 +18,11 @@ class CommandHandler {
   /** Store event*/
   private val eventStore = new EventStore
 
+  implicit val system = ActorSystem("event-system")
+
+  /** Notify event for readers */
+  private val eventNotifier: ActorRef = system.actorOf(Props.apply(classOf[EventNotifier]))
+
   /**
    *
    * @param command
@@ -27,6 +33,7 @@ class CommandHandler {
     aggregate.map(aggregate => {
       val event = aggregate.onCommand.apply(command)
       eventStore.store(event)
+      eventNotifier ! event
       event
     })
   }
