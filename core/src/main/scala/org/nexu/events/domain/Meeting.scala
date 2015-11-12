@@ -1,6 +1,5 @@
 package org.nexu.events.domain
 
-
 case class Meeting(timeslot: TimeSlot, description: String, participants: List[User]) {
 
   /**

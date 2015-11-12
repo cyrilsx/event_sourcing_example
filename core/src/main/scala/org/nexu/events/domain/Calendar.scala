@@ -1,6 +1,5 @@
 package org.nexu.events.domain
 
-
 import org.joda.time.{Period, DateTime}
 import org.nexu.events.command.{CreateCalendar, OptimizeTimetable, CreateMeeting}
 import org.nexu.events.event.{TimetableReorganized, CalendarCreated, Event, MeetingCreated}

@@ -1,6 +1,7 @@
 package org.nexu.events.read
 
 import reactivemongo.api.MongoDriver
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Created by cyril on 13.10.15.

@@ -1,9 +1,10 @@
 package org.nexu.events.command
 
-import akka.actor.{ActorRef, Props, ActorSystem}
-import org.nexu.events.event.{EventNotifier, Event}
+import akka.actor.{ActorRef, ActorSystem, Props}
+import org.nexu.events.event.{Event, EventNotifier}
 import org.nexu.events.fw.{EventStore, AggregateFactory}
 import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent.Future
 
 /**

@@ -1,6 +1,5 @@
 package org.nexu.events.fw
 
-
 import java.util.UUID
 
 import com.datastax.driver.core.Row

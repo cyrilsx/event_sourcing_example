@@ -17,11 +17,16 @@ lazy val root = (project in file(".")).
       println("sum: " + sum)
       sum
     }
-  )
+  ).
+  dependsOn(app).
+  aggregate(app, http, persistence, core)
 
+// Not sure I need app project
+lazy val app = project.settings(commonSettings: _*).dependsOn(http)
 
-//lazy val util = project.settings(commonSettings: _*)
-//lazy val core = project.settings(commonSettings: _*).dependsOn(util)
+lazy val http = project.settings(commonSettings: _*).dependsOn(core, persistence)
+lazy val persistence = project.settings(commonSettings: _*).dependsOn(core)
+lazy val core = project.settings(commonSettings: _*)
 
 
 val scalaTestVersion = "2.2.4"
