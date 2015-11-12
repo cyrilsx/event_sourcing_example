@@ -35,6 +35,9 @@ object EventApplication extends App {
         }
       }
     }
+    path("meeting" / IntNumber / endDate) {
+
+    }
 
   }
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
