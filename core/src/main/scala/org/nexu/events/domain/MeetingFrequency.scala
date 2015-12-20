@@ -1,6 +1,6 @@
 package org.nexu.events.domain
 
-import org.joda.time.Duration
+import java.time.Duration
 
 
 case class MeetingFrequency(duration: Duration) {

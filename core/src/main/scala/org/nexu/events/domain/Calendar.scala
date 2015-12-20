@@ -1,6 +1,7 @@
 package org.nexu.events.domain
 
-import org.joda.time.{Period, DateTime}
+import java.time.LocalDateTime
+
 import org.nexu.events.command.{CreateCalendar, OptimizeTimetable, CreateMeeting}
 import org.nexu.events.event.{TimetableReorganized, CalendarCreated, Event, MeetingCreated}
 
@@ -60,7 +61,7 @@ case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, 
    * @param to end period to reorganized
    * @return TimetableReorganized event
    */
-  def optimizeTimeTable(from: DateTime, to: DateTime) = {
+  def optimizeTimeTable(from: LocalDateTime, to: LocalDateTime) = {
 
     /**
      * Recursive function to reorganized the meeting

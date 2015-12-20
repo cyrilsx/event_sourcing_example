@@ -1,12 +1,12 @@
 package org.nexu.events.command
 
+import java.time.LocalDateTime
 import java.util.Objects.requireNonNull
 
-import org.joda.time.DateTime
-import org.nexu.events.domain.{Calendar, Aggregate}
+import org.nexu.events.domain.{Aggregate, Calendar}
 
 
-case class OptimizeTimetable(calendarId: String, from: DateTime, to: DateTime) extends Command {
+case class OptimizeTimetable(calendarId: String, from: LocalDateTime, to: LocalDateTime) extends Command {
 
   override def isValid: Unit = {
     requireNonNull(from, "start date must be fill")
