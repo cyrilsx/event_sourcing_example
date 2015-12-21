@@ -2,8 +2,8 @@ package org.nexu.events.domain
 
 import java.time.LocalDateTime
 
-import org.nexu.events.command.{CreateCalendar, OptimizeTimetable, CreateMeeting}
-import org.nexu.events.event.{TimetableReorganized, CalendarCreated, Event, MeetingCreated}
+import org.nexu.events.command.{CreateCalendar, CreateMeeting, OptimizeTimetable}
+import org.nexu.events.event.{CalendarCreated, Event, MeetingCreated, TimetableReorganized}
 
 import scala.annotation.tailrec
 
@@ -11,12 +11,12 @@ import scala.annotation.tailrec
  *
  * @param owner
  * @param timetable
- * @param aggregateId
+  * @param name
  * @param version
  */
-case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, version: Long) extends Aggregate {
+case class Calendar(owner: User, timetable: List[Meeting], name: String, version: Long) extends Aggregate {
 
-  def onCommand = {
+  override def onCommand = {
     case app: CreateMeeting => createAppointment(app)
     case newCalendar: CreateCalendar => createCalendar(newCalendar)
     case optimizationCalendar: OptimizeTimetable => optimizeTimeTable(optimizationCalendar.from, optimizationCalendar.to)
@@ -92,17 +92,21 @@ case class Calendar(owner: User, timetable: List[Meeting], aggregateId: String, 
 
 
     val meetingChanged = organiseMeeting(selectedMeetings, List(), List())
-    new TimetableReorganized(new Calendar(owner, temporaryTimetable ::: meetingChanged._1 ::: meetingChanged._2, aggregateId, version + 1))
+    new TimetableReorganized(new Calendar(owner, temporaryTimetable ::: meetingChanged._1 ::: meetingChanged._2, name, version + 1))
   }
 
 
-  override def getAggregateId: String = aggregateId
+  /**
+    *
+    * @return Aggregate Id must be unique. In this case, it's the concatenation of owner key and calendar name
+    */
+  override def getAggregateId: String = name + owner.email
 
   override def getVersion: Long = version
 
   override def replay(event: Event): Aggregate = {
     event match {
-      case meetingCreatedEvent: MeetingCreated => new Calendar(owner, meetingCreatedEvent.meeting :: timetable, aggregateId, version + 1)
+      case meetingCreatedEvent: MeetingCreated => new Calendar(owner, meetingCreatedEvent.meeting :: timetable, name, version + 1)
       case newCalendar: CalendarCreated => newCalendar.getAggregate.copy(version = version + 1)
     }
 

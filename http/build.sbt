@@ -1,6 +1,6 @@
 
 val scalaTestVersion = "2.2.4"
-val akkaVersion = "2.0-M1"
+val akkaVersion = "2.0-M2"
 val json4sVersion = "3.3.0.RC5"
 val akkaHttpJsonVersion = "1.1.0"
 

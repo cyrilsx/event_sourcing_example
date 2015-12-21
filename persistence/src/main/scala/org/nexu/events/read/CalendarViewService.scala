@@ -1,13 +1,11 @@
 package org.nexu.events.read
 
-import java.time.{ZoneOffset, LocalDateTime}
+import java.time.{LocalDateTime, ZoneOffset}
 
 import org.nexu.events.read.view.CalendarDetailView.CalendarDetailViewHandler
 import org.nexu.events.read.view.Event.EventViewHandler
-import org.nexu.events.read.view.CalendarView.calendarViewHandler
-import org.nexu.events.read.view.{CalendarDetailView, CalendarView, Event}
+import org.nexu.events.read.view.{CalendarDetailView, Event}
 import reactivemongo.api.ReadPreference.Primary
-import reactivemongo.bson.{BSONDateTime, BSONArray, BSONDocument}
 import reactivemongo.bson._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,9 +16,9 @@ import scala.concurrent.Future
   */
 class CalendarViewService {
 
-  implicit def dateTimeToEpoch(dateTime: LocalDateTime): Long = dateTime.atOffset(ZoneOffset.UTC).toEpochSecond
-
   val connection = new ReadDbConnection
+
+  implicit def dateTimeToEpoch(dateTime: LocalDateTime): Long = dateTime.atOffset(ZoneOffset.UTC).toEpochSecond
 
   def findByCriteria(startDateTime: LocalDateTime, endDateTime: LocalDateTime): Future[List[Event]] = {
     val calendarCollection = connection.connect("calendar")
@@ -42,5 +40,6 @@ class CalendarViewService {
       .cursor[CalendarDetailView](Primary)
       .collect[List]()
   }
+
 
 }
