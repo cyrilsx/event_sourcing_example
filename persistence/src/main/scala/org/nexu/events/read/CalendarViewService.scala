@@ -36,7 +36,7 @@ class CalendarViewService {
   def findUserCalendar(email: String): Future[List[CalendarDetailView]] = {
     val calendarCollection = connection.connect("calendar")
 
-    calendarCollection.find(BSONDocument("$eq" -> email))
+    calendarCollection.find(BSONDocument("name" -> BSONDocument("$eq" -> email)))
       .cursor[CalendarDetailView](Primary)
       .collect[List]()
   }

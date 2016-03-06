@@ -5,9 +5,6 @@ lazy val commonSettings = Seq(
   version := "1.0.0",
   scalaVersion := "2.11.7"
 )
-
-val sampleIntTask = taskKey[Int]("A sample int task.")
-
 lazy val root = (project in file(".")).
   settings(commonSettings: _*).
   settings(
@@ -20,15 +17,15 @@ lazy val root = (project in file(".")).
   ).
   dependsOn(app).
   aggregate(app, http, persistence, core)
-
 // Not sure I need app project
 lazy val app = project.settings(commonSettings: _*).dependsOn(http)
 
+
+mainClass in(Compile, run) := Some("org.nexu.events.EventApplication")
 lazy val http = project.settings(commonSettings: _*).dependsOn(core, persistence)
 lazy val persistence = project.settings(commonSettings: _*).dependsOn(core)
 lazy val core = project.settings(commonSettings: _*)
-
-
+val sampleIntTask = taskKey[Int]("A sample int task.")
 val scalaTestVersion = "2.2.4"
 val akkaVersion = "2.0-M1"
 val json4sVersion = "3.3.0.RC5"
